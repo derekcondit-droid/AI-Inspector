@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Wizard’s Den — AR Room (Simple Upload Version)</title>
+  <meta name="description" content="An easy-to-use AR experience for visitors of the Wizard’s Den. Just upload to Cloudflare Pages." />
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar-nft.js"></script>
+  <style>
+    body { margin: 0; overflow: hidden; background: #000; color: #fff; font-family: sans-serif; text-align: center; }
+    #overlay { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.9); }
+    #startBtn { background: #6c63ff; color: white; border: none; border-radius: 8px; padding: 12px 20px; font-size: 18px; cursor: pointer; }
+    #startBtn:hover { background: #837dff; }
+  </style>
+</head>
+<body>
+  <div id="overlay">
+    <h1>Welcome to the Wizard’s Den ✨</h1>
+    <p>Tap <b>Start AR</b>, then point your phone at the <b>Hiro marker</b> so it fills most of the screen.</p>
+    <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:14px 0;">
+      <button id="startBtn">Start AR</button>
+      <a href="https://raw.githubusercontent.com/AR-js-org/AR.js/master/three.js/examples/marker-training/examples/pattern-files/hiro.png" target="_blank" rel="noopener" style="text-decoration:none">
+        <button id="openMarker" style="background:#2b2b2b;color:#fff;border:none;border-radius:8px;padding:12px 16px;font-size:16px;cursor:pointer">🖨️ Open Hiro Marker</button>
+      </a>
+    </div>
+    <small style="opacity:.8;display:block;max-width:540px;padding:0 12px;line-height:1.4">
+      Tips: Allow camera access • Use good lighting • Keep the marker flat • If nothing appears, reload and try again.
+    </small>
+  </div>
+
+  <a-scene
+    embedded
+    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; maxDetectionRate: 60;"
+    renderer="antialias: true; alpha: true"
+  >
+    <a-assets>
+      <img id="sigil" src="assets/images/wizards-sigil.png" crossorigin="anonymous" />
+      <a-asset-item id="orb" src="assets/models/arcane_orb.glb"></a-asset-item>
+    </a-assets>
+
+    <a-nft type="nft" url="assets/targets/grimoire/grimoire" smooth="true" smoothCount="8" smoothTolerance="0.01" smoothThreshold="5">
+      <a-entity gltf-model="#orb" position="0 0 0" scale="0.3 0.3 0.3" animation="property: rotation; to: 0 360 0; loop: true; dur: 8000"></a-entity>
+      <a-plane src="#sigil" width="1" height="1" rotation="-90 0 0" material="transparent: true"></a-plane>
+    </a-nft>
+
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const overlay = document.getElementById('overlay');
+    startBtn.addEventListener('click', () => {
+      overlay.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
+
+<!-- ==========================================================
+EASIEST WAY TO USE THIS (no coding):
+--------------------------------------------------------------
+1. Go to your Cloudflare Dashboard → Pages → Create project → **Upload assets**.
+2. Drag this HTML file in (and your /assets folder with the logo, orb, and grimoire files).
+3. Press **Deploy**.
+4. Open the new site link on your phone and tap “Start AR.”
+That’s it! 🎉
+
+You can rename or replace any images in /assets/images, videos in /assets/video, or models in /assets/models.
+========================================================== -->
