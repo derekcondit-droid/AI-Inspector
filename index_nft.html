@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'/>
+<meta name='viewport' content='width=device-width,initial-scale=1,viewport-fit=cover'/>
+<title>Wizard's Den AR — NFT Targets (Advanced)</title>
+<script src='https://aframe.io/releases/1.5.0/aframe.min.js'></script>
+<script src='https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar-nft.js'></script>
+<style>body{margin:0;overflow:hidden;background:#000;color:#fff;font-family:sans-serif}</style>
+</head>
+<body>
+<a-scene embedded renderer='antialias:true;alpha:true' arjs='sourceType:webcam;debugUIEnabled:false'>
+  <a-assets>
+    <img id='sigil' src='assets/images/wizards-sigil.png' crossorigin='anonymous'/>
+  </a-assets>
+  <a-nft type='nft' url='assets/targets/grimoire/grimoire' smooth='true' smoothCount='8'>
+    <a-box position='0 0 0' depth='0.6' height='0.6' width='0.6' color='#8e7cff'
+           animation='property: rotation; to: 0 360 0; loop: true; dur: 6000'></a-box>
+    <a-plane src='#sigil' width='1' height='1' rotation='-90 0 0'></a-plane>
+  </a-nft>
+  <a-entity camera></a-entity>
+</a-scene>
+</body>
+</html>
