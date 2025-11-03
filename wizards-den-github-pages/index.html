@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'/>
+<meta name='viewport' content='width=device-width,initial-scale=1,viewport-fit=cover'/>
+<title>Wizard's Den AR — Instant Demo (Hiro)</title>
+<script src='https://aframe.io/releases/1.5.0/aframe.min.js'></script>
+<script src='https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js'></script>
+<style>
+  body{margin:0;overflow:hidden;background:#000;color:#fff;font-family:sans-serif}
+  #overlay{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.9);z-index:10;text-align:center;padding:20px}
+  #overlay button{background:#6c63ff;color:#fff;border:none;border-radius:10px;padding:12px 18px;font-size:18px;cursor:pointer}
+  #tip{position:fixed;left:0;right:0;bottom:12px;text-align:center;font-size:14px;opacity:.8}
+</style>
+</head>
+<body>
+<div id='overlay'>
+  <h1>Wizard's Den — AR Demo</h1>
+  <p>Tap start and point your camera at the classic <b>Hiro marker</b>.</p>
+  <p><a href='https://raw.githubusercontent.com/AR-js-org/AR.js/master/three.js/examples/marker-training/examples/pattern-files/hiro.png' target='_blank' style='color:#9b8cff'>Open & print the Hiro marker</a></p>
+  <button id='start'>Start AR</button>
+</div>
+
+<a-scene embedded renderer='antialias:true;alpha:true' vr-mode-ui='enabled:false'
+        arjs='sourceType: webcam; debugUIEnabled: false;'>
+
+  <a-marker preset='hiro'>
+    <a-box position='0 0.5 0' depth='1' height='1' width='1' color='#8e7cff'
+           animation='property: rotation; to: 0 360 0; loop: true; dur: 6000'></a-box>
+    <a-plane src='assets/images/wizards-sigil.png' position='0 0 0' rotation='-90 0 0' width='1.2' height='1.2'></a-plane>
+  </a-marker>
+
+  <a-entity camera></a-entity>
+</a-scene>
+
+<div id='tip'>If tracking is shaky, move closer so the marker fills more of the screen.</div>
+
+<script>
+  document.getElementById('start').onclick = () => document.getElementById('overlay').style.display='none';
+</script>
+</body>
+</html>

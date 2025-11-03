@@ -1,0 +1,10 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='600' height='140' viewBox='0 0 600 140'>
+<defs><linearGradient id='g' x1='0' x2='1' y1='0' y2='1'>
+<stop offset='0%' stop-color='#9b8cff'/><stop offset='100%' stop-color='#5d54ff'/></linearGradient></defs>
+<rect width='600' height='140' fill='#0b0b10'/>
+<circle cx='70' cy='70' r='40' fill='none' stroke='url(#g)' stroke-width='6'/>
+<circle cx='70' cy='70' r='26' fill='none' stroke='#ffffff' stroke-width='2' opacity='0.8'/>
+<path d='M70 40 L82 70 L70 100 L58 70 Z' fill='none' stroke='#ffffff' stroke-width='3' opacity='0.9'/>
+<text x='130' y='85' fill='url(#g)' font-size='42' font-family='Arial'>Wizard's Den</text>
+<text x='130' y='112' fill='#ffffff' font-size='16' font-family='Arial' opacity='0.85'>AR - Placeholder</text>
+</svg>
