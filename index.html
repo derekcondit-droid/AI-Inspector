@@ -1,42 +1,241 @@
 <!doctype html>
-<html lang='en'>
+<html lang="en">
 <head>
-<meta charset='utf-8'/>
-<meta name='viewport' content='width=device-width,initial-scale=1,viewport-fit=cover'/>
-<title>Wizard's Den AR — Instant Demo (Hiro)</title>
-<script src='https://aframe.io/releases/1.5.0/aframe.min.js'></script>
-<script src='https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js'></script>
-<style>
-  body{margin:0;overflow:hidden;background:#000;color:#fff;font-family:sans-serif}
-  #overlay{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.9);z-index:10;text-align:center;padding:20px}
-  #overlay button{background:#6c63ff;color:#fff;border:none;border-radius:10px;padding:12px 18px;font-size:18px;cursor:pointer}
-  #tip{position:fixed;left:0;right:0;bottom:12px;text-align:center;font-size:14px;opacity:.8}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cosmic Compass Horoscope</title>
+  <style>
+    :root {
+      --bg: #0c0820;
+      --card: #1a1336;
+      --accent: #8b7bff;
+      --text: #f3f0ff;
+      --muted: #b9b0dd;
+      --good: #74e1b0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 20%, #271f55 0, transparent 35%),
+        radial-gradient(circle at 90% 10%, #2f246a 0, transparent 40%),
+        linear-gradient(160deg, #0a0718, var(--bg));
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: min(760px, 100%);
+      background: color-mix(in srgb, var(--card), black 8%);
+      border: 1px solid #3a2c74;
+      border-radius: 18px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, .35);
+      padding: 28px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.4rem, 2.8vw, 2rem);
+    }
+
+    .subtitle {
+      margin: 0 0 22px;
+      color: var(--muted);
+    }
+
+    form {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      align-items: end;
+    }
+
+    label {
+      display: grid;
+      gap: 8px;
+      font-weight: 600;
+      color: #ddd4ff;
+    }
+
+    select,
+    input,
+    button {
+      border-radius: 12px;
+      border: 1px solid #4b3f8f;
+      background: #100b2a;
+      color: var(--text);
+      padding: 12px 14px;
+      font-size: 1rem;
+    }
+
+    button {
+      cursor: pointer;
+      background: linear-gradient(120deg, #6d5df8, var(--accent));
+      border: 0;
+      font-weight: 700;
+      transition: transform .12s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+
+    .result {
+      margin-top: 22px;
+      padding: 18px;
+      border-radius: 14px;
+      border: 1px solid #3e317d;
+      background: #120d2e;
+      display: none;
+    }
+
+    .result.active { display: block; }
+
+    .badge {
+      display: inline-block;
+      margin-bottom: 10px;
+      border: 1px solid #5a4cad;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: .82rem;
+      color: #dfd8ff;
+    }
+
+    .fortune {
+      margin: 0;
+      line-height: 1.5;
+      font-size: 1.06rem;
+    }
+
+    .tip {
+      margin: 12px 0 0;
+      color: var(--good);
+      font-size: .95rem;
+    }
+
+    .fineprint {
+      margin-top: 18px;
+      color: #9e93ce;
+      font-size: .8rem;
+    }
+  </style>
 </head>
 <body>
-<div id='overlay'>
-  <h1>Wizard's Den — AR Demo</h1>
-  <p>Tap start and point your camera at the classic <b>Hiro marker</b>.</p>
-  <p><a href='https://raw.githubusercontent.com/AR-js-org/AR.js/master/three.js/examples/marker-training/examples/pattern-files/hiro.png' target='_blank' style='color:#9b8cff'>Open & print the Hiro marker</a></p>
-  <button id='start'>Start AR</button>
-</div>
+  <main class="app">
+    <h1>🔮 Cosmic Compass Horoscope</h1>
+    <p class="subtitle">Choose your zodiac sign (or enter your birthday) to get today's horoscope vibe.</p>
 
-<a-scene embedded renderer='antialias:true;alpha:true' vr-mode-ui='enabled:false'
-        arjs='sourceType: webcam; debugUIEnabled: false;'>
+    <form id="horoscope-form">
+      <label>
+        Zodiac sign
+        <select id="sign">
+          <option value="">Auto-detect from birthday</option>
+          <option>Aries</option><option>Taurus</option><option>Gemini</option><option>Cancer</option>
+          <option>Leo</option><option>Virgo</option><option>Libra</option><option>Scorpio</option>
+          <option>Sagittarius</option><option>Capricorn</option><option>Aquarius</option><option>Pisces</option>
+        </select>
+      </label>
 
-  <a-marker preset='hiro'>
-    <a-box position='0 0.5 0' depth='1' height='1' width='1' color='#8e7cff'
-           animation='property: rotation; to: 0 360 0; loop: true; dur: 6000'></a-box>
-    <a-plane src='assets/images/wizards-sigil.png' position='0 0 0' rotation='-90 0 0' width='1.2' height='1.2'></a-plane>
-  </a-marker>
+      <label>
+        Birthday
+        <input type="date" id="birthday" />
+      </label>
 
-  <a-entity camera></a-entity>
-</a-scene>
+      <button type="submit">Find My Horoscope</button>
+    </form>
 
-<div id='tip'>If tracking is shaky, move closer so the marker fills more of the screen.</div>
+    <section id="result" class="result" aria-live="polite"></section>
 
-<script>
-  document.getElementById('start').onclick = () => document.getElementById('overlay').style.display='none';
-</script>
+    <p class="fineprint">For fun and inspiration only — your choices shape your real future.</p>
+  </main>
+
+  <script>
+    const messages = {
+      Aries: "Momentum is on your side today. Start first, refine later, and trust your spark.",
+      Taurus: "Steady progress beats sudden leaps. Protect your time and nurture one meaningful goal.",
+      Gemini: "A conversation opens a new path. Ask one extra question and listen for the hidden clue.",
+      Cancer: "Lead with empathy, but keep your boundaries clear. Caring for yourself deepens your intuition.",
+      Leo: "Your confidence is magnetic right now. Share your idea boldly and invite collaboration.",
+      Virgo: "Small improvements create big relief. Tidy one corner of life and your mind will follow.",
+      Libra: "Balance returns when you choose what matters most. Make one decision you have been delaying.",
+      Scorpio: "Your focus cuts through noise. Trust your instincts and act on what feels deeply true.",
+      Sagittarius: "Adventure can be local today. Try a new route, topic, or ritual to reignite energy.",
+      Capricorn: "Consistency pays off. Finish one practical task and celebrate the momentum it creates.",
+      Aquarius: "Your originality helps others now. Share your unconventional idea without over-editing it.",
+      Pisces: "Creativity and intuition are high. Capture your thoughts before they drift and turn one into action."
+    };
+
+    function getSignFromDate(dateString) {
+      if (!dateString) return null;
+      const d = new Date(dateString + "T00:00:00");
+      const month = d.getUTCMonth() + 1;
+      const day = d.getUTCDate();
+
+      if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return "Aries";
+      if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return "Taurus";
+      if ((month === 5 && day >= 21) || (month === 6 && day <= 20)) return "Gemini";
+      if ((month === 6 && day >= 21) || (month === 7 && day <= 22)) return "Cancer";
+      if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) return "Leo";
+      if ((month === 8 && day >= 23) || (month === 9 && day <= 22)) return "Virgo";
+      if ((month === 9 && day >= 23) || (month === 10 && day <= 22)) return "Libra";
+      if ((month === 10 && day >= 23) || (month === 11 && day <= 21)) return "Scorpio";
+      if ((month === 11 && day >= 22) || (month === 12 && day <= 21)) return "Sagittarius";
+      if ((month === 12 && day >= 22) || (month === 1 && day <= 19)) return "Capricorn";
+      if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) return "Aquarius";
+      return "Pisces";
+    }
+
+    function getActionTip(sign) {
+      const tips = {
+        Aries: "Action tip: Start with a 15-minute sprint.",
+        Taurus: "Action tip: Block one distraction-free hour.",
+        Gemini: "Action tip: Reach out to someone you trust.",
+        Cancer: "Action tip: Write down one boundary and keep it.",
+        Leo: "Action tip: Share your idea in public today.",
+        Virgo: "Action tip: Break your task into 3 tiny steps.",
+        Libra: "Action tip: Compare only two options, then choose.",
+        Scorpio: "Action tip: Protect your focus with a short no-phone block.",
+        Sagittarius: "Action tip: Learn one new thing for 20 minutes.",
+        Capricorn: "Action tip: Finish the hardest task first.",
+        Aquarius: "Action tip: Pitch your unusual idea to one person.",
+        Pisces: "Action tip: Turn a creative thought into one concrete next step."
+      };
+      return tips[sign];
+    }
+
+    const form = document.getElementById("horoscope-form");
+    const signInput = document.getElementById("sign");
+    const birthdayInput = document.getElementById("birthday");
+    const result = document.getElementById("result");
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const selected = signInput.value || getSignFromDate(birthdayInput.value);
+      if (!selected) {
+        result.className = "result active";
+        result.innerHTML = "<p class='fortune'>Please choose a zodiac sign or provide your birthday first.</p>";
+        return;
+      }
+
+      const today = new Date().toLocaleDateString(undefined, {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+      });
+
+      result.className = "result active";
+      result.innerHTML = `
+        <span class="badge">${selected} • ${today}</span>
+        <p class="fortune">${messages[selected]}</p>
+        <p class="tip">${getActionTip(selected)}</p>
+      `;
+    });
+  </script>
 </body>
 </html>
